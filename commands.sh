@@ -50,3 +50,42 @@ kubectl get hpa guestbook --watch
 # observe details of hpa
 
 kubectl get hpa guestbook
+
+# 3. Perform Rolling Updates and Rollbacks on the Guestbook application
+
+# update index.html
+
+# build and push your updated app image
+
+docker build . -t us.icr.io/$MY_NAMESPACE/guestbook:v1 && docker push us.icr.io/$MY_NAMESPACE/guestbook:v1
+
+# update values in deployment.yml
+
+# apply changes
+
+kubectl apply -f deployment.yml
+
+# in new terminal, run port-forward 
+
+kubectl port-forward deployment.apps/guestbook 3000:3000
+
+# in old terminal, see history of deployments
+
+kubectl rollout history deployment/guestbook
+
+# details of revision of the deployment
+
+kubectl rollout history deployments guestbook --revision=2
+
+# get replica sets and observe deployment
+
+kubectl get rs
+
+# undo deployment
+
+kubectl rollout undo deployment/guestbook --to-revision=1
+
+# get replica sets and observe 
+
+kubectl get rs
+
