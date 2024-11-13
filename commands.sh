@@ -30,3 +30,23 @@ kubectl apply -f deployment.yml
 # view app via
 
 kubectl port-forward deployment.apps/guestbook 3000:3000
+
+# 2. Autoscale the Guestbook application using Horizontal Pod Autoscaler
+
+kubectl autoscale deployment guestbook --cpu-percent=5 --min=1 --max=10
+
+# check current status
+
+kubectl get hpa guestbook
+
+# generate load with correct url
+
+kubectl run -i --tty load-generator --rm --image=busybox:1.36.0 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- https://cjuergens-3000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/; done"
+
+# observe replicas increase
+
+kubectl get hpa guestbook --watch
+
+# observe details of hpa
+
+kubectl get hpa guestbook
